@@ -1,4 +1,4 @@
-/*
+/* 
 	jQuery Popup Plugin 1.7
 	Copyright (c) 2011 Daniel Thomson
 	
