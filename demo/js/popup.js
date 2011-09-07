@@ -100,7 +100,7 @@
                    // *** set content source and gallery title variables ***
                    myPopup.boxSrc = $(this).attr("name");
                    // store DOM fragment as a variable			
-					
+					myPopup.fragment = $(myPopup.boxSrc);	
                    
                    myPopup.galleryTitle = $(this).attr("title");
                    myPopup.imageDesc = $(this).attr("longdesc");
@@ -126,8 +126,7 @@
                    		$.fn.popup.getAjaxContent(myPopup,opts);	
                    }
                    else
-                   {
-                   		myPopup.fragment = $(myPopup.boxSrc);	
+                   {                   		
                        $.fn.popup.styleNodeBox(myPopup,opts);
                    }
                    return false;
