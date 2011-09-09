@@ -391,7 +391,7 @@
 		if (opts.autoSize === false && opts.centerImage === true)
 		{
 			$(contentSelector+" .imgPane").prepend("<span style='display:inline-block;height:"+opts.boxHeight+"px;line-height:"+opts.boxHeight+"px;width:1px'>&nbsp;</span>");
-			$(contentSelector+" .imgPane").css({"line-height":opts.boxHeight,"text-align":"center"});
+			$(contentSelector+" .imgPane").css({"line-height":opts.boxHeight+"px","text-align":"center"});
 			$(contentSelector+" .imgPane img").css({"display":"inline","vertical-align":"middle"});
 		}
 		if (opts.gallery === true)
