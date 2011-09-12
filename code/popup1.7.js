@@ -69,13 +69,14 @@
 							'centerImage' : true,                // centers the image in a fixed size box
 							'shadowLength' : 42,                 // set the width of the padding around the box for your drop shadows
 							'transition' : 500,                  // transition speed from one box to the next
-							'popupID' : "popupBox",              // custom class for the popup box
-							'contentClass' : "popupContent",     // custom class for the popup content
-							'closeBox' : "popupClose",           // class the close button has
+							'popupID' : 'popupBox',              // custom class for the popup box
+							'contentClass' : 'popupContent',     // custom class for the popup content
+							'closeBox' : 'popupClose',           // class the close button has
 							'centerOnResize' : true,             // set whether the box centers itself when the browser resizes
-							'loaderPath' : "loader.gif",         // file path to the loading image
-							'overflow' : "visible",				// "hidden" or "visible", can set the css overflow attribute on or off
-							'ajax' : false						// allows user to specify an ajax call to a resource
+							'loaderPath' : 'loader.gif',         // file path to the loading image
+							'overflow' : 'visible',				// "hidden" or "visible", can set the css overflow attribute on or off
+							'ajax' : false,						// allows user to specify an ajax call to a resource
+							'ajaxType' : "text"					// jQuery needs the data type to be specified - http://api.jquery.com/jQuery.ajax/
 
 					   };
 
@@ -90,9 +91,7 @@
 		this.each(function(){
 			// do pluging stuff here
 			// each box calling the plugin now has the variable name: myPopup
-			var myPopup = $(this);
-			
-						              
+			var myPopup = $(this);								              
 
 			$(myPopup).click(function()
 			{												
@@ -100,7 +99,7 @@
                    // *** set content source and gallery title variables ***
                    myPopup.boxSrc = $(this).attr("name");
                    // store DOM fragment as a variable
-                   myPopup.fragment = $(myPopup.boxSrc);									
+                   myPopup.fragment = $(myPopup.boxSrc);                 									
                    
                    myPopup.galleryTitle = $(this).attr("title");
                    myPopup.imageDesc = $(this).attr("longdesc");
@@ -405,7 +404,7 @@
 				if (opts.galleryCounter === true)
 				{
 					var thisIndex = $("*[title='"+popup.galleryTitle+"']").index(popup) + 1;
-					var galleryLength = $("*[title='"+popup.galleryTitle+"']").length + 1;
+					var galleryLength = $("*[title='"+popup.galleryTitle+"']").length;
 					$(contentSelector).find(".galleryControls").append("<p class='galleryCounter'>Displaying "+thisIndex+" of "+galleryLength+"</p>");
 				}
 			}
@@ -439,7 +438,7 @@
 	{		
 		//popup.fragment = $(popup.boxSrc);
 		$("#"+opts.popupID+" ."+opts.contentClass+" img.loader").remove();
-		$("#"+opts.popupID+" ."+opts.contentClass).append('<div class="galleryTitle"><a href="" class="'+opts.closeBox+'">close</a></div>');
+		$("#"+opts.popupID+" ."+opts.contentClass).append('<div class="galleryTitle"><a href="" class="'+opts.closeBox+'">close</a></div>');		
 		$("#"+opts.popupID+" ."+opts.contentClass).append(popup.fragment);
 		$("#"+opts.popupID+" ."+opts.contentClass+" "+popup.boxSrc).css("display","block");
 		// style popup box
@@ -453,14 +452,15 @@
 	{
 		$("#"+opts.popupID+" ."+opts.contentClass).html('<img class="loader" src="'+opts.loaderPath+'" width="" height="" alt="" />');				
 		$.ajax({
-			url: popup.boxSrc,
+			url: popup.boxSrc,			
+			dataType : opts.ajaxType,
 			success : function(msg)
-			{
+			{				
 				popup.fragment = msg;				
 				$.fn.popup.styleNodeBox(popup,opts);
 			},
 			error : function()
-			{			
+			{							
 				popup.fragment = "ajax request failed";		
 				$.fn.popup.styleNodeBox(popup,opts);
 			}
@@ -528,7 +528,7 @@
 		// may want to do some fancy stuff here, but for now just fading out the box
 		$("#"+opts.popupID).stop().fadeOut("slow").css("display","none");
 		// delete the popup box from the DOM
-          $("#"+opts.popupID).remove();
+        $("#"+opts.popupID).remove();
 		$(".transparency").fadeOut("slow");
 	};
 
