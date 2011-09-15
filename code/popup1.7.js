@@ -91,15 +91,17 @@
 		this.each(function(){
 			// do pluging stuff here
 			// each box calling the plugin now has the variable name: myPopup
-			var myPopup = $(this);								              
+			var myPopup = $(this);	
+			
+			 // *** set content source and gallery title variables ***
+             myPopup.boxSrc = $(this).attr("name");
+             // store DOM fragment as a variable
+             myPopup.fragment = $(myPopup.boxSrc); 							              
 
 			$(myPopup).click(function()
 			{												
 				
-                   // *** set content source and gallery title variables ***
-                   myPopup.boxSrc = $(this).attr("name");
-                   // store DOM fragment as a variable
-                   myPopup.fragment = $(myPopup.boxSrc);                 									
+                                  									
                    
                    myPopup.galleryTitle = $(this).attr("title");
                    myPopup.imageDesc = $(this).attr("longdesc");
