@@ -21,6 +21,7 @@
 //               - removed the $(window).unbind() method, seems not to be needed
 // version 1.7 - added option to set overflow hidden off so that you can hang elements (namely the close button) outside the box
 //				- added proper ajax loading
+//				- added the option to fix the "top" or "left" position of the box.
 //  TO DO: make an option to allow the popup to move with page scrolling	
 //
 // level of error suppresion -> low
@@ -76,8 +77,9 @@
 							'loaderPath' : 'loader.gif',         // file path to the loading image
 							'overflow' : 'visible',				// "hidden" or "visible", can set the css overflow attribute on or off
 							'ajax' : false,						// allows user to specify an ajax call to a resource
-							'ajaxType' : "text"					// jQuery needs the data type to be specified - http://api.jquery.com/jQuery.ajax/
-
+							'ajaxType' : "text",				// jQuery needs the data type to be specified - http://api.jquery.com/jQuery.ajax/
+							'fixedTop' : false,					// false/integer : allow for the user to specify the top position of the popup
+							'fixedLeft' : false					// false/integer : allow for the user to specify the left position of the popup		
 					   };
 
 		// if settings have been defined then overwrite the default ones
@@ -276,9 +278,20 @@
 		outerBoxHeight = contentHeight + (opts.shadowLength*2);
 
 		// calculate absolute position of the box and then center it on the screen
-		boxPos = $.fn.popup.centerBox(popup,outerBoxWidth,outerBoxHeight);
+		boxPos = $.fn.popup.centerBox(popup,outerBoxWidth,outerBoxHeight);		
+		
+		// allow user to specify a fixed position for the popup. Use fixedTop and fixedLeft, if not then center the box
+		if (opts.fixedTop)
+		{
+			boxPos.topPos = opts.fixedTop + "px";
+		}
+		if (opts.fixedLeft)
+		{
+			boxPos.leftPos = boxPos.fixedLeft + "px";
+		}
+		
+		topPos = boxPos.topPos;			
 		leftPos = boxPos.leftPos;
-		topPos = boxPos.topPos;
 
 		// on window resize - center the box in the middle again
 		if (opts.centerOnResize === true)
@@ -286,7 +299,15 @@
               $(window).resize(function()
               {
                   dimensions = $.fn.popup.findScreenPos();
-                  boxPos = $.fn.popup.centerBox(dimensions,outerBoxWidth,outerBoxHeight);
+                  boxPos = $.fn.popup.centerBox(dimensions,outerBoxWidth,outerBoxHeight); 
+                  if (opts.fixedTop)
+                  {
+                  	boxPos.topPos = opts.fixedTop + "px";
+                  }
+                  if (opts.fixedLeft)
+                  {
+                  	boxPos.leftPos = boxPos.fixedLeft + "px";
+                  }                 
                   $(popupSelector).css({top:boxPos.topPos,left:boxPos.leftPos});
               });
           }
