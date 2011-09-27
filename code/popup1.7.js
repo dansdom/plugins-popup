@@ -22,6 +22,8 @@
 // version 1.7 - added option to set overflow hidden off so that you can hang elements (namely the close button) outside the box
 //				- added proper ajax loading
 //				- added the option to fix the "top" or "left" position of the box.
+//				- added the option to turn the close button off
+//
 //  TO DO: make an option to allow the popup to move with page scrolling	
 //
 // level of error suppresion -> low
@@ -73,6 +75,7 @@
 							'popupID' : 'popupBox',              // custom class for the popup box
 							'contentClass' : 'popupContent',     // custom class for the popup content
 							'closeBox' : 'popupClose',           // class the close button has
+							'hasCloseButton' : true,				// set whether you want to be able to close the box or not	
 							'centerOnResize' : true,             // set whether the box centers itself when the browser resizes
 							'loaderPath' : 'loader.gif',         // file path to the loading image
 							'overflow' : 'visible',				// "hidden" or "visible", can set the css overflow attribute on or off
@@ -98,7 +101,15 @@
 			 // *** set content source and gallery title variables ***
              myPopup.boxSrc = $(this).attr("name");
              // store DOM fragment as a variable
-             myPopup.fragment = $(myPopup.boxSrc); 							              
+             myPopup.fragment = $(myPopup.boxSrc);
+             if (opts.hasCloseButton)
+             {
+             	myPopup.closeBtn = '<a href="" class="'+opts.closeBox+'">close</a>';
+             } 
+             else
+             {
+             	myPopup.closeBtn = '';
+             }							              
 
 			$(myPopup).click(function()
 			{												
@@ -208,25 +219,28 @@
         document.onkeydown = function(e)
 		{
 			var keycode;
-			if (window.event)
+			if (window.event && opts.hasCloseButton)
 			{
 				keycode = window.event.keyCode;
 			}
-			else if (e)
+			else if (e && opts.hasCloseButton)
 			{
 				keycode = e.which;
 			}
-			if (keycode == 27)
+			if (keycode == 27 && opts.hasCloseButton)
 			{
                    $("#"+opts.popupID).stop().fadeOut("slow").css("display","none");
                    $(".transparency").fadeOut("slow");
 			}
 		};
 
-        $(".transparency").click(function(){
-            $(this).fadeOut("slow");
-            $("#"+opts.popupID).fadeOut("slow");
-        });
+		if (opts.hasCloseButton)
+		{
+	        $(".transparency").click(function(){
+	            $(this).fadeOut("slow");
+	            $("#"+opts.popupID).fadeOut("slow");
+	        });
+        }
         // clear box of any content
         $("#"+opts.popupID+" ."+opts.contentClass).children().remove();
         // style transparent layer
@@ -422,7 +436,7 @@
 			if (popup.galleryTitle !== false)
 			{
 				$(contentSelector).append('<div class="galleryControls"><a href="" class="prev">previous</a><a href="" class="next">next</a></div>');
-				$(contentSelector).prepend('<div class="galleryTitle"><h2>'+popup.galleryTitle+'</h2><a href="" class="'+opts.closeBox+'">close</a></div>');
+				$(contentSelector).prepend('<div class="galleryTitle"><h2>'+popup.galleryTitle+'</h2>'+popup.closeBtn+'</div>');
 				// if gallery counter is true then add counter
 				if (opts.galleryCounter === true)
 				{
@@ -434,7 +448,7 @@
 			// if not a gallery title then just add the close button
 			else
 			{
-				$(contentSelector).prepend('<div class="galleryTitle"><a href="" class="'+opts.closeBox+'">close</a></div>');
+				$(contentSelector).prepend('<div class="galleryTitle">'+popup.closeBtn+'</div>');
 			}
 		}
           // start of image loading stuff
@@ -461,7 +475,7 @@
 	{		
 		//popup.fragment = $(popup.boxSrc);
 		$("#"+opts.popupID+" ."+opts.contentClass+" img.loader").remove();
-		$("#"+opts.popupID+" ."+opts.contentClass).append('<div class="galleryTitle"><a href="" class="'+opts.closeBox+'">close</a></div>');		
+		$("#"+opts.popupID+" ."+opts.contentClass).append('<div class="galleryTitle">'+popup.closeBtn+'</div>');		
 		$("#"+opts.popupID+" ."+opts.contentClass).append(popup.fragment);
 		$("#"+opts.popupID+" ."+opts.contentClass+" "+popup.boxSrc).css("display","block");
 		// style popup box
@@ -504,34 +518,38 @@
 		});
 		
 		// add key controls and keep escape key handler
-		document.onkeydown = function(e)
-		{
-			var keycode;
-			if (window.event)
+		// if hasCloseButton
+		//if (opts.hasCloseButton)
+		//{
+			document.onkeydown = function(e)
 			{
-				keycode = window.event.keyCode;
-			}
-			else if (e)
-			{
-				keycode = e.which;
-			}
-			if (keycode == 39)
-			{
-                   $(document).unbind();
-                   $("#"+opts.popupID+" .next").click();
-			}
-			else if (keycode == 37)
-			{
-                   $(document).unbind();
-                   $("#"+opts.popupID+" .prev").click();
-			}
-			if (keycode == 27)
-			{
-                   $.fn.popup.closeBox(popup,opts);
-                   //$("#"+opts.popupID).fadeOut("slow");
-                   //$(".transparency").fadeOut("slow");
-			}
-		};
+				var keycode;
+				if (window.event && opts.hasCloseButton)
+				{
+					keycode = window.event.keyCode;
+				}
+				else if (e && opts.hasCloseButton)
+				{
+					keycode = e.which;
+				}
+				if (keycode == 39 && opts.hasCloseButton)
+				{
+	                   $(document).unbind();
+	                   $("#"+opts.popupID+" .next").click();
+				}
+				else if (keycode == 37 && opts.hasCloseButton)
+				{
+	                   $(document).unbind();
+	                   $("#"+opts.popupID+" .prev").click();
+				}
+				if (keycode == 27 && opts.hasCloseButton)
+				{
+	                   $.fn.popup.closeBox(popup,opts);
+	                   //$("#"+opts.popupID).fadeOut("slow");
+	                   //$(".transparency").fadeOut("slow");
+				}
+			};
+		//}
 	};
 	
 
