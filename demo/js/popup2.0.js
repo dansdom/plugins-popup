@@ -527,12 +527,12 @@
 				if (e.keyCode == 39 && popup.opts.hasCloseButton)
 				{
 					$(document).unbind('.' + popup.namespace);
-					$("#" + popup.opts.popupID + " .next").click();
+					popup.cycleImage(1);
 				}
 				else if (e.keyCode == 37 && popup.opts.hasCloseButton)
 				{
 					$(document).unbind("." + popup.namespace);
-					$("#" + popup.opts.popupID + " .prev").click();
+					popup.cycleImage(-1);
 				}
 				if (e.keyCode == 27 && popup.opts.hasCloseButton)
 				{
