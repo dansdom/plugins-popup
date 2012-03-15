@@ -24,6 +24,7 @@
 //				- added the option to fix the "top" or "left" position of the box.
 //				- added the option to turn the close button off
 // version 2.0 - refactored script to use new architecture: https://github.com/dansdom/plugins-template-v2
+// version 2.1 - added callback functions For opening and closing the popup
 //
 //  TO DO:	make an option to allow the popup to move with page scrolling
 //			add close box function
@@ -96,7 +97,9 @@
 		'ajax'					: false,			// allows user to specify an ajax call to a resource
 		'ajaxType'				: "text",			// jQuery needs the data type to be specified - http://api.jquery.com/jQuery.ajax/
 		'fixedTop'				: false,			// false/integer : allow for the user to specify the top position of the popup
-		'fixedLeft'				: false				// false/integer : allow for the user to specify the left position of the popup	
+		'fixedLeft'				: false,			// false/integer : allow for the user to specify the left position of the popup
+		'onOpen'				: function() {},	// call back function when the box opens
+		'onClose'				: function() {}
 	};
 	
 	// plugin functions go here
@@ -108,6 +111,9 @@
 			
 			// this seems a bit hacky, but for now I will unbind the namespace first before binding
 			this.destroy();
+			
+			// this is a flag to test if the popup is open. I will only call the close box function on those popup's that are currently open so that only one callback function is called at one time
+			this.el.isOpen = false;
 			
 			// *** set content source and gallery title variables ***
             this.el.boxSrc = this.el.attr("name");
@@ -124,6 +130,7 @@
 			
 			$(this.el).bind('click.' + this.namespace, function()
 			{
+				//if (popup.el.isOpen === false)
 				popup.openBox();
                 return false;
             });
@@ -191,17 +198,18 @@
 			// add event handling for closing box
 			$(document).bind('keydown.' + this.namespace, function(e)
 			{
-				if (e.keyCode == 27)
+				if (e.keyCode == 27 && popup.el.isOpen === true)
 				{
-					$("#" + popup.opts.popupID).stop().fadeOut("slow").css("display","none");
-					$(".transparency").fadeOut("slow");
+					popup.closeBox();
 				}
 			});
 	
 			
 			$(".transparency").bind('click.' + this.namespace, function(){
-				$(this).fadeOut("slow");
-				$("#" + popup.opts.popupID).fadeOut("slow");
+				if (popup.el.isOpen === true)
+				{
+					popup.closeBox();
+				}
 			});
 			
 			// clear box of any content
@@ -487,18 +495,17 @@
 			// add key controls and keep escape key handler
 			$(document).bind('keydown.' + this.namespace, function(e)
 			{
-				console.log("keydown");
-				if (e.keyCode == 39)
+				if (e.keyCode == 39 && popup.el.isOpen === true)
 				{
 					//$(document).unbind('.' + popup.namespace);
 					popup.cycleImage(1);
 				}
-				else if (e.keyCode == 37)
+				else if (e.keyCode == 37 && popup.el.isOpen === true)
 				{
 					//$(document).unbind("." + popup.namespace);
 					popup.cycleImage(-1);
 				}
-				if (e.keyCode == 27)
+				if (e.keyCode == 27 && popup.el.isOpen === true)
 				{
 					popup.closeBox();
 					//$("#"+opts.popupID).fadeOut("slow");
@@ -512,7 +519,10 @@
 			var popup = this;
 			
 			$("#" + popup.opts.popupID + " ." + popup.opts.closeBox).bind('click.' + popup.namespace, function(){
-				popup.closeBox();
+				if (popup.el.isOpen === true)
+				{
+					popup.closeBox();
+				}
 				return false;
 			});
 		},
@@ -546,6 +556,14 @@
             {                   		
                 this.styleNodeBox();
             }
+			
+			// run the callback function on box open
+			if (this.el.isOpen === false)
+			{
+				this.opts.onOpen();
+			}
+			// set the isOpen flag
+			this.el.isOpen = true;
 		},
 		// this function closes the box and removes it from the DOM.
 		closeBox : function()
@@ -555,11 +573,20 @@
 			// delete the popup box from the DOM
 			$("#" + this.opts.popupID).remove();
 			$(".transparency").fadeOut("slow");
+			// run the callback function on box close if it is open
+			
+			if (this.el.isOpen === true)
+			{
+				this.opts.onClose();
+			}
+			// unbind the key controls
+			$(document).unbind('keydown.' + this.namespace);
+			this.el.isOpen = false;
 		},
 		// this function finds the next image and then displays it
 		cycleImage : function(imgIndex)
 		{
-			console.log("hitting cycle image");
+			//console.log("hitting cycle image");
 			var thisIndex = $("*[title='" + this.el.galleryTitle + "']").index(this.el),
 				galleryLength = $("*[title='" + this.el.galleryTitle + "']").length,
 				cycleIndex = thisIndex + imgIndex;
@@ -572,10 +599,11 @@
 			{
 				cycleIndex = 0;
 			}
-			console.log("*[title='" + this.el.galleryTitle + "']");
-			// open the new popup by simulating a click function on the thumbnail
-			// !!!!!!!!!!! this needs to change, I can do this better now with the new architecture !!!!!!!!!!!!!!
-			$("*[title='" + this.el.galleryTitle + "']:eq(" + cycleIndex + ")").click();
+			
+			this.el.isOpen = false;
+			// unbind the key controls
+			$(document).unbind('keydown.' + this.namespace);
+			$("*[title='" + this.el.galleryTitle + "']:eq(" + cycleIndex + ")").popup("openBox");
 		},
 		option : function(args) {
 			this.opts = $.extend(true, {}, this.opts, args);

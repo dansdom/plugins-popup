@@ -17,7 +17,7 @@
 	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen, projection" />
 	    <!-- Javascripts -->
     <script language="javascript" type="text/javascript" src="js/jquery.js"></script>    
-    <script language="javascript" type="text/javascript" src="js/popup2.0.js"></script> 
+    <script language="javascript" type="text/javascript" src="js/popup2.1.js"></script> 
     <!--[if ie 6]>
   		<link rel="stylesheet" href="css/IEstyle.css" type="text/css" />
     	<script language="javascript" type="text/javascript" src="js/pngHack.js"></script>
@@ -40,7 +40,13 @@
 					boxHeight : 600,
 					boxWidth : 500,
 					shadowLength : 0,
-					transition : 0					
+					transition : 0,
+					onOpen : function() {
+						console.log("opened the box .popup");
+					},
+					onClose : function() {
+						console.log("closed the box .popup");
+					}
 				});
 				$(".popup1").popup({
 					transparentLayer : true,
@@ -49,7 +55,13 @@
 					popupID : "fixedGallery",
 					imageDesc : true,
 					fixedTop : 50,
-					fixedLeft : false										
+					fixedLeft : false,
+					onOpen : function() {
+						console.log("opened the box .popup1");
+					},
+					onClose : function() {
+						console.log("closed the box .popup1");
+					}
 				});
 				$(".popup2").popup({
 					transparentLayer : true,
@@ -58,13 +70,25 @@
 					ajax : true,
 					overflow: "hidden",
 					shadowLength : 10,
-					hasCloseButton : false  	
+					hasCloseButton : false,
+					onOpen : function() {
+						console.log("opened the box .popup2");
+					},
+					onClose : function() {
+						console.log("closed the box .popup2");
+					}
 				});
 				$(".popup3").popup({
 					transparentLayer : true,
 					gallery : false,
 					popupID : "popupBox3",
-					contentClass : "popupBox3"				
+					contentClass : "popupBox3",
+					onOpen : function() {
+						console.log("opened the box .popup3");
+					},
+					onClose : function() {
+						console.log("closed the box .popup3");
+					}
 				});
 
 			});
