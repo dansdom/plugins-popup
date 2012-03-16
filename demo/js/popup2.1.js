@@ -24,7 +24,7 @@
 //				- added the option to fix the "top" or "left" position of the box.
 //				- added the option to turn the close button off
 // version 2.0 - refactored script to use new architecture: https://github.com/dansdom/plugins-template-v2
-// version 2.1 - added callback functions For opening and closing the popup
+// version 2.1 - added callback functions For opening and closing the popup, fixed up a bunch of event handling too
 //
 //  TO DO:	make an option to allow the popup to move with page scrolling
 //			add close box function
@@ -70,6 +70,11 @@
 		// extend the settings object with the options, make a 'deep' copy of the object using an empty 'holding' object
 		this.opts = $.extend(true, {}, $.Popup.settings, options);
 		this.init();
+		// run the callback function if it is defined
+		if (typeof callback === "function")
+		{
+			callback.call();
+		}
 	};
 	
 	// these are the plugin default settings that will be over-written by user settings
