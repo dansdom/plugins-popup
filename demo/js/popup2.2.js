@@ -209,7 +209,7 @@
         },
         styleBox : function(properties, image) {
             var popup = this,
-                popupSelector = "#" + this.opts.popupID,
+                popupBox = $("#" + this.opts.popupID),
                 contentSelector = "." + this.opts.contentClass,
                 imgSelector = contentSelector + " img",
                 contentHeight,
@@ -271,44 +271,44 @@
                     if (popup.opts.fixedLeft) {
                         boxPos.leftPos = boxPos.fixedLeft;
                     }
-                    $(popupSelector).css({top: boxPos.topPos + "px", left: boxPos.leftPos + "px"});
+                    popupBox.css({top: boxPos.topPos + "px", left: boxPos.leftPos + "px"});
                 });
             }
               
             // claculate dimensions of popup
             // animate to the correct size if it is already open, else just set the values
-            if ($(popupSelector).css("display") === "block" && properties && this.opts.autoSize === true) {
-                oldBoxHeight = parseFloat($(popupSelector).css("height")) - (this.opts.shadowLength * 2) - (this.opts.titleHeight + this.opts.controlHeight);
-                oldBoxWidth = parseFloat($(popupSelector).css("width")) - (this.opts.shadowLength * 2);
-                $(popupSelector + " .galleryTitle").css({height: this.opts.titleHeight + "px"});
-                $(popupSelector + " .galleryControls").css({height: this.opts.controlHeight + "px", "overflow": this.opts.overflow});
-                $(popupSelector + " img").css({height: oldBoxHeight + "px", width: oldBoxWidth + "px"});
-                $(popupSelector + " .imgPane").css({"width":"100%"});
+            if (popupBox.css("display") === "block" && properties && this.opts.autoSize === true) {
+                oldBoxHeight = parseFloat(popupBox.css("height")) - (this.opts.shadowLength * 2) - (this.opts.titleHeight + this.opts.controlHeight);
+                oldBoxWidth = parseFloat(popupBox.css("width")) - (this.opts.shadowLength * 2);
+                popupBox.find(".galleryTitle").css({height: this.opts.titleHeight + "px"});
+                popupBox.find(".galleryControls").css({height: this.opts.controlHeight + "px", "overflow": this.opts.overflow});
+                popupBox.find("img").css({height: oldBoxHeight + "px", width: oldBoxWidth + "px"});
+                popupBox.find(".imgPane").css({"width":"100%"});
                   
                 // I want to animate most of this through the step function of the main image animation for better IE results
                 // maybe set up some local variables as well to increase performance
-                $(popupSelector + " img").animate({height: properties.imgHeight + "px", width: properties.imgWidth + "px"}, {queue:false, duration: this.opts.transition});
-                $(popupSelector).animate({height: outerBoxHeight + "px", width: outerBoxWidth + "px", "left": leftPos + "px", "top": topPos + "px"}, {queue:false, duration: this.opts.transition});
-                $(popupSelector + " .imgPane").animate({height: (contentHeight - this.opts.titleHeight - this.opts.controlHeight) + "px"}, {queue:false, duration: this.opts.transition});
-                $(popupSelector + " .popupContent").animate({height: contentHeight + "px", width: contentWidth + "px"}, {queue:false, duration: this.opts.transition});
-                $(popupSelector + " .popupTM, "+popupSelector+" .popupBM").animate({width: properties.imgWidth + "px"}, {queue:false, duration: this.opts.transition});
+                popupBox.find("img").animate({height: properties.imgHeight + "px", width: properties.imgWidth + "px"}, {queue:false, duration: this.opts.transition});
+                popupBox.animate({height: outerBoxHeight + "px", width: outerBoxWidth + "px", "left": leftPos + "px", "top": topPos + "px"}, {queue:false, duration: this.opts.transition});
+                popupBox.find(".imgPane").animate({height: (contentHeight - this.opts.titleHeight - this.opts.controlHeight) + "px"}, {queue:false, duration: this.opts.transition});
+                popupBox.find(".popupContent").animate({height: contentHeight + "px", width: contentWidth + "px"}, {queue:false, duration: this.opts.transition});
+                popupBox.find(".popupTM, .popupBM").animate({width: properties.imgWidth + "px"}, {queue:false, duration: this.opts.transition});
             }
             // create box and set its dimensions
             else {
-                $(popupSelector).css({height: outerBoxHeight + "px", width: outerBoxWidth + "px", "position": "absolute", "z-index":100, "overflow": this.opts.overflow});
-                $(popupSelector + " .imgPane").css({height:(contentHeight - this.opts.titleHeight - this.opts.controlHeight) + "px"});
-                $(popupSelector + " .popupContent").css({height: contentHeight + "px", width: contentWidth + "px"});
-                $(popupSelector + " .popupML div, " + popupSelector + " .popupMR div").css({height: contentHeight + "px"});
-                $(popupSelector + " .galleryTitle").css({height: this.opts.titleHeight + "px", "overflow": this.opts.overflow});
-                $(popupSelector + " .galleryControls").css({height: this.opts.controlHeight + "px", "overflow": this.opts.overflow});
-                $(popupSelector + " .corner").css({height: this.opts.shadowLength + "px", width: this.opts.shadowLength + "px"});
-                $(popupSelector + " .popupTM").css({height: this.opts.shadowLength + "px", width: contentWidth + "px"});
-                $(popupSelector + " .popupBM").css({height: this.opts.shadowLength + "px", width: contentWidth + "px"});
-                $(popupSelector).css({"left": leftPos + "px", "top": topPos + "px"});
+                popupBox.css({height: outerBoxHeight + "px", width: outerBoxWidth + "px", "position": "absolute", "z-index":100, "overflow": this.opts.overflow});
+                popupBox.find(".imgPane").css({height:(contentHeight - this.opts.titleHeight - this.opts.controlHeight) + "px"});
+                popupBox.find(".popupContent").css({height: contentHeight + "px", width: contentWidth + "px"});
+                popupBox.find(".popupML div, .popupMR div").css({height: contentHeight + "px"});
+                popupBox.find(".galleryTitle").css({height: this.opts.titleHeight + "px", "overflow": this.opts.overflow});
+                popupBox.find(".galleryControls").css({height: this.opts.controlHeight + "px", "overflow": this.opts.overflow});
+                popupBox.find(".corner").css({height: this.opts.shadowLength + "px", width: this.opts.shadowLength + "px"});
+                popupBox.find(".popupTM").css({height: this.opts.shadowLength + "px", width: contentWidth + "px"});
+                popupBox.find(".popupBM").css({height: this.opts.shadowLength + "px", width: contentWidth + "px"});
+                popupBox.css({"left": leftPos + "px", "top": topPos + "px"});
             }
             
             // this probably should go somewhere else - leaving it in for now not to confuse me :P
-            $(popupSelector).fadeIn("slow");
+            popupBox.fadeIn("slow");
             //var pngTimer = setTimeout(function(){$(".pngbg div").addClass("popupPng");},10);
             // not sure why I am doing this anymore, since I would have a seperate box markup for IE6. leaving it oput for now  
             //$(".pngbg div").addClass("popupPng");
@@ -347,11 +347,15 @@
         },
         displayImage : function() {
             var popup = this,
+                thisIndex, 
+                galleryLength,
+                popUpImg,
+                imgProperties = {},
                 // add the image tag to the popup content
-                contentSelector = "#" + this.opts.popupID + " ." + this.opts.contentClass;
+                contentBox = $("#" + this.opts.popupID + " ." + this.opts.contentClass);
                 
             // add image markup to the popup box
-            $(contentSelector).append('<div class="imgPane"><img class="loader" src="' + this.opts.loaderPath + '" width="" height="" alt="" /></div>');        
+            contentBox.append('<div class="imgPane"><img class="loader" src="' + this.opts.loaderPath + '" width="" height="" alt="" /></div>');        
             // if gallery description is set to true then create the box that the description will go into and append after .imgPane
             if (this.opts.imageDesc === true) {
                 $(".imgPane").css("position","relative").append('<div class="imageDesc" style="position:absolute;bottom:0;left:0;width:100%;background:#000;opacity:0.8;filter:alpha(opacity = 80);">' + this.el.imageDesc+'</div>');
@@ -359,52 +363,49 @@
     
             // if gallery is a fixed height and width and centerImage = true, then align the image to the center of the box
             if (this.opts.autoSize === false && this.opts.centerImage === true) {
-                $(contentSelector+" .imgPane").prepend("<span style='display:inline-block;height:" + this.opts.boxHeight + "px;line-height:" + this.opts.boxHeight + "px;width:1px'>&nbsp;</span>");
-                $(contentSelector+" .imgPane").css({"line-height": this.opts.boxHeight + "px","text-align":"center"});
-                $(contentSelector+" .imgPane img").css({"display":"inline","vertical-align":"middle"});
+                contentBox.find(".imgPane").prepend("<span style='display:inline-block;height:" + this.opts.boxHeight + "px;line-height:" + this.opts.boxHeight + "px;width:1px'>&nbsp;</span>");
+                contentBox.find(".imgPane").css({"line-height": this.opts.boxHeight + "px","text-align":"center"});
+                contentBox.find(".imgPane img").css({"display":"inline","vertical-align":"middle"});
             }
             if (this.opts.gallery === true) {
                 // add gallery controls here
                 if (this.el.galleryTitle !== false) {
-                    $(contentSelector).append('<div class="galleryControls"><a href="" class="prev">previous</a><a href="" class="next">next</a></div>');
-                    $(contentSelector).prepend('<div class="galleryTitle"><h2>' + this.el.galleryTitle + '</h2>' + this.el.closeBtn + '</div>');
+                    contentBox.append('<div class="galleryControls"><a href="" class="prev">previous</a><a href="" class="next">next</a></div>');
+                    contentBox.prepend('<div class="galleryTitle"><h2>' + this.el.galleryTitle + '</h2>' + this.el.closeBtn + '</div>');
                     // if gallery counter is true then add counter
                     if (this.opts.galleryCounter === true) {
-                        var thisIndex = $("*[title='" + this.el.galleryTitle + "']").index(this.el) + 1;
-                        var galleryLength = $("*[title='" + this.el.galleryTitle + "']").length;
-                        $(contentSelector).find(".galleryControls").append("<p class='galleryCounter'>Displaying " + thisIndex + " of " + galleryLength + "</p>");
+                        thisIndex = $("*[title='" + this.el.galleryTitle + "']").index(this.el) + 1;
+                        galleryLength = $("*[title='" + this.el.galleryTitle + "']").length;
+                        contentBox.find(".galleryControls").append("<p class='galleryCounter'>Displaying " + thisIndex + " of " + galleryLength + "</p>");
                     }
                 }
                 // if not a gallery title then just add the close button
                 else {
-                    $(contentSelector).prepend('<div class="galleryTitle">' + this.el.closeBtn + '</div>');
+                    contentBox.prepend('<div class="galleryTitle">' + this.el.closeBtn + '</div>');
                 }
             }
             
             // start of image loading stuff
-            var popUpImg = new Image(),
-                imgProperties = {};
-                
+            popUpImg = new Image();
             popUpImg.onload = function() {
                 imgProperties.imgHeight = popUpImg.height;
                 imgProperties.imgWidth = popUpImg.width;
                 popup.styleBox(imgProperties, popUpImg);              
             };
             popUpImg.src = this.el.boxSrc;
-            // end of image stuff
               
             //  add close button controls
             this.addCloseButton();
             // add gallery controls and key functions here
             this.addGalleryControls();
         },
-        styleNodeBox : function() {   
-            //console.log(this.fragment);    
-            //popup.fragment = $(popup.boxSrc);
-            $("#" + this.opts.popupID+" ." + this.opts.contentClass + " img.loader").remove();
-            $("#" + this.opts.popupID+" ." + this.opts.contentClass).append('<div class="galleryTitle">' + this.el.closeBtn + '</div>');
-            $("#" + this.opts.popupID+" ." + this.opts.contentClass).append(this.fragment);
-            $("#" + this.opts.popupID+" ." + this.opts.contentClass + " " + this.el.boxSrc).css("display","block");
+        styleNodeBox : function() { 
+            var contentBox = $("#" + this.opts.popupID+" ." + this.opts.contentClass);  
+            //console.log(this.fragment); 
+            contentBox.find("img.loader").remove();
+            contentBox.append('<div class="galleryTitle">' + this.el.closeBtn + '</div>');
+            contentBox.append(this.fragment);
+            contentBox.find(this.el.boxSrc).css("display","block");
             // style popup box
             this.styleBox();
             //  add close button controls
