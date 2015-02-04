@@ -62,8 +62,7 @@
     'use strict';
     
     // Plugin namespace definition
-    $.Popup = function (options, element, callback)
-    {
+    $.Popup = function (options, element, callback) {
         // wrap the element in the jQuery object
         this.el = $(element);
         // this is the namespace for all bound event handlers in the plugin
@@ -72,8 +71,7 @@
         this.opts = $.extend(true, {}, $.Popup.settings, options);
         this.init();
         // run the callback function if it is defined
-        if (typeof callback === "function")
-        {
+        if (typeof callback === "function") {
             callback.call();
         }
     };
@@ -111,9 +109,6 @@
     // plugin functions go here
     $.Popup.prototype = {
         init : function() {
-            console.log('init popup');
-            // going to need to define this, as there are some anonymous closures in this function.
-            // something interesting to consider
             var popup = this;
             
             // this seems a bit hacky, but for now I will unbind the namespace first before binding
@@ -143,9 +138,7 @@
             });
             
         },
-        // ******  find the screen height and width measurements to position box in (go IE!)  ******
-        findScreenPos : function()
-        {
+        findScreenPos : function() {
             var dimensions = {},
                 win = $(window);
                 
@@ -155,15 +148,12 @@
             dimensions.scrX = win.scrollLeft();
             return dimensions;
         },
-        // ******  create the markup for the popup box  ******
-        createBox : function()
-        {
+        createBox : function() {
             var popup = this,
                 popupBox,
                 dimensions;
                 
-            if ($("#" + this.opts.popupID).length === 0)
-            {
+            if ($("#" + this.opts.popupID).length === 0) {
                 popupBox = '<div id="' + this.opts.popupID + '"><table cellpadding="0" cellspacing="0"><tbody><tr class="popupTop"><td class="popupTL corner pngbg"></td><td class="popupTM pngbg"></td><td class="popupTR corner pngbg"></td></tr><tr class="popupMid"><td class="popupML pngbg"></td><td class="' + this.opts.contentClass + '"></td><td class="popupMR pngbg"></td></tr><tr class="popupBot"><td class="popupBL corner pngbg"></td><td class="popupBM pngbg"></td><td class="popupBR corner pngbg"></td></tr></tbody></table></div>';
                 // oops :( I forgot why I made a different box for IE6, was it to put the png class on the corners?
                 $("body").append(popupBox);
@@ -171,18 +161,16 @@
             }
             
             // add transparency layer if transparency is true.
-            if (this.opts.transparentLayer === true && $(".transparency").length === 0)
-            {
+            if (this.opts.transparentLayer === true && $(".transparency").length === 0) {
                 var transparentLayer = '<div class="transparency" style="z-index:99;background:#000;opacity:' + (this.opts.transparentOpacity / 100) + ';filter:alpha(opacity = ' + this.opts.transparentOpacity + ');top:0;left:0;position:absolute"></div>';
                 $("body").append(transparentLayer);
                 // add event listeners for browser resizing and scrolling to adjust the transparent layer size
-                //win.unbind();
-                $(window).bind('scroll.' + this.namespace, function(){
+                $(window).on('scroll.' + this.namespace, function(){
                     // find height and width of transparent layer
                     dimensions = popup.findScreenPos();
                     $(".transparency").css({height: dimensions.winY + dimensions.scrY, width: dimensions.winX + dimensions.scrX});
                 });
-                $(window).bind('resize.' + this.namespace, function(){
+                $(window).on('resize.' + this.namespace, function(){
                     // find height and width of transparent layer
                     dimensions = popup.findScreenPos();
                     $(".transparency").css({height: dimensions.winY + dimensions.scrY + "px", width:dimensions.winX + dimensions.scrX + "px"});
@@ -190,24 +178,20 @@
             }
     
             // get rid of transparency if 'false' and it already exists and don't need it
-            if (this.opts.transparentLayer === false && $(".transparency").length > 0)
-            {
+            if (this.opts.transparentLayer === false && $(".transparency").length > 0) {
                 $(".transparency").remove();
             }
     
             // add event handling for closing box
-            $(document).bind('keydown.' + this.namespace, function(e)
-            {
-                if (e.keyCode == 27 && popup.el.isOpen === true)
-                {
+            $(document).on('keydown.' + this.namespace, function(e) {
+                if (e.keyCode == 27 && popup.el.isOpen === true) {
                     popup.closeBox();
                 }
             });
     
             
-            $(".transparency").bind('click.' + this.namespace, function(){
-                if (popup.el.isOpen === true)
-                {
+            $(".transparency").on('click.' + this.namespace, function(){
+                if (popup.el.isOpen === true) {
                     popup.closeBox();
                 }
             });
@@ -223,9 +207,7 @@
                 "height" : dimensions.winY + dimensions.scrY + "px",
                 "width" : dimensions.winX + dimensions.scrX + "px"});
         },
-        // ******  display the popup box  ******
-        styleBox : function(properties, image)
-        {
+        styleBox : function(properties, image) {
             var popup = this,
                 popupSelector = "#" + this.opts.popupID,
                 contentSelector = "." + this.opts.contentClass,
@@ -241,25 +223,20 @@
                 oldBoxHeight,
                 oldBoxWidth;
                 
-            if (image)
-            {
+            if (image) {
                 $(imgSelector).attr("src", image.src);
                 $(imgSelector).attr("height", properties.imgHeight + "px");
                 $(imgSelector).attr("width", properties.imgWidth + "px");
             }
             // if this is an image being loaded
-            if (properties)
-            {
+            if (properties) {
                 contentHeight = properties.imgHeight + this.opts.titleHeight + this.opts.controlHeight;
                 contentWidth = properties.imgWidth;
-                if (this.opts.autoSize === false)
-                {
+                if (this.opts.autoSize === false) {
                     contentHeight = this.opts.boxHeight + this.opts.titleHeight + this.opts.controlHeight;
                     contentWidth = this.opts.boxWidth;
                 }
-            }
-            else
-            {
+            } else {
                 contentHeight = this.opts.boxHeight;
                 contentWidth = this.opts.boxWidth;
             }
@@ -272,12 +249,10 @@
             boxPos = this.centerBox(dimensions,outerBoxWidth,outerBoxHeight);
             
             // allow user to specify a fixed position for the popup. Use fixedTop and fixedLeft, if not then center the box
-            if (this.opts.fixedTop)
-            {
+            if (this.opts.fixedTop) {
                 boxPos.topPos = this.opts.fixedTop;
             }
-            if (this.opts.fixedLeft)
-            {
+            if (this.opts.fixedLeft) {
                 boxPos.leftPos = boxPos.fixedLeft;
             }
             
@@ -285,19 +260,15 @@
             leftPos = boxPos.leftPos;
     
             // on window resize - center the box in the middle again
-            if (this.opts.centerOnResize === true)
-            {
+            if (this.opts.centerOnResize === true) {
                 
-                $(window).bind('resize.' + this.namespace, function()
-                {
+                $(window).on('resize.' + this.namespace, function() {
                     dimensions = popup.findScreenPos();
                     boxPos = popup.centerBox(dimensions,outerBoxWidth,outerBoxHeight); 
-                    if (popup.opts.fixedTop)
-                    {
+                    if (popup.opts.fixedTop) {
                         boxPos.topPos = popup.opts.fixedTop;
                     }
-                    if (popup.opts.fixedLeft)
-                    {
+                    if (popup.opts.fixedLeft) {
                         boxPos.leftPos = boxPos.fixedLeft;
                     }
                     $(popupSelector).css({top: boxPos.topPos + "px", left: boxPos.leftPos + "px"});
@@ -306,8 +277,7 @@
               
             // claculate dimensions of popup
             // animate to the correct size if it is already open, else just set the values
-            if ($(popupSelector).css("display") === "block" && properties && this.opts.autoSize === true)
-            {
+            if ($(popupSelector).css("display") === "block" && properties && this.opts.autoSize === true) {
                 oldBoxHeight = parseFloat($(popupSelector).css("height")) - (this.opts.shadowLength * 2) - (this.opts.titleHeight + this.opts.controlHeight);
                 oldBoxWidth = parseFloat($(popupSelector).css("width")) - (this.opts.shadowLength * 2);
                 $(popupSelector + " .galleryTitle").css({height: this.opts.titleHeight + "px"});
@@ -324,8 +294,7 @@
                 $(popupSelector + " .popupTM, "+popupSelector+" .popupBM").animate({width: properties.imgWidth + "px"}, {queue:false, duration: this.opts.transition});
             }
             // create box and set its dimensions
-            else
-            {
+            else {
                 $(popupSelector).css({height: outerBoxHeight + "px", width: outerBoxWidth + "px", "position": "absolute", "z-index":100, "overflow": this.opts.overflow});
                 $(popupSelector + " .imgPane").css({height:(contentHeight - this.opts.titleHeight - this.opts.controlHeight) + "px"});
                 $(popupSelector + " .popupContent").css({height: contentHeight + "px", width: contentWidth + "px"});
@@ -346,30 +315,24 @@
     
         },
         // function centers the box in the middle of the screen
-        centerBox : function(dimensions,outerBoxWidth,outerBoxHeight)
-        {
+        centerBox : function(dimensions,outerBoxWidth,outerBoxHeight) {
             var coords = {};
             coords.leftPos = ((dimensions.winX - outerBoxWidth) / 2) + dimensions.scrX;
             coords.topPos = ((dimensions.winY - outerBoxHeight) / 2) + dimensions.scrY;
-            if (coords.topPos < 0)
-            {
+            if (coords.topPos < 0) {
                 coords.topPos = 0;
             }
-            if (coords.leftPos < 0)
-            {
+            if (coords.leftPos < 0) {
                 coords.leftPos = 0;
             }
             return coords;
         },
-        // ******  find if the popup content is an image path  ******
-        isContentImage : function()
-        {
+        isContentImage : function() {
             var contentString = this.el.boxSrc.split("."),
                 ext = contentString[contentString.length-1],
                 isImage;
                 
-            switch(ext)
-            {
+            switch(ext) {
                 case 'jpg' : isImage = true;
                     break;
                 case 'gif' : isImage = true;
@@ -382,9 +345,7 @@
             }
             return isImage;
         },
-        // ******  display the popup image  ******
-        displayImage : function()
-        {
+        displayImage : function() {
             var popup = this,
                 // add the image tag to the popup content
                 contentSelector = "#" + this.opts.popupID + " ." + this.opts.contentClass;
@@ -392,36 +353,30 @@
             // add image markup to the popup box
             $(contentSelector).append('<div class="imgPane"><img class="loader" src="' + this.opts.loaderPath + '" width="" height="" alt="" /></div>');        
             // if gallery description is set to true then create the box that the description will go into and append after .imgPane
-            if (this.opts.imageDesc === true)
-            {
+            if (this.opts.imageDesc === true) {
                 $(".imgPane").css("position","relative").append('<div class="imageDesc" style="position:absolute;bottom:0;left:0;width:100%;background:#000;opacity:0.8;filter:alpha(opacity = 80);">' + this.el.imageDesc+'</div>');
             }
     
             // if gallery is a fixed height and width and centerImage = true, then align the image to the center of the box
-            if (this.opts.autoSize === false && this.opts.centerImage === true)
-            {
+            if (this.opts.autoSize === false && this.opts.centerImage === true) {
                 $(contentSelector+" .imgPane").prepend("<span style='display:inline-block;height:" + this.opts.boxHeight + "px;line-height:" + this.opts.boxHeight + "px;width:1px'>&nbsp;</span>");
                 $(contentSelector+" .imgPane").css({"line-height": this.opts.boxHeight + "px","text-align":"center"});
                 $(contentSelector+" .imgPane img").css({"display":"inline","vertical-align":"middle"});
             }
-            if (this.opts.gallery === true)
-            {
+            if (this.opts.gallery === true) {
                 // add gallery controls here
-                if (this.el.galleryTitle !== false)
-                {
+                if (this.el.galleryTitle !== false) {
                     $(contentSelector).append('<div class="galleryControls"><a href="" class="prev">previous</a><a href="" class="next">next</a></div>');
                     $(contentSelector).prepend('<div class="galleryTitle"><h2>' + this.el.galleryTitle + '</h2>' + this.el.closeBtn + '</div>');
                     // if gallery counter is true then add counter
-                    if (this.opts.galleryCounter === true)
-                    {
+                    if (this.opts.galleryCounter === true) {
                         var thisIndex = $("*[title='" + this.el.galleryTitle + "']").index(this.el) + 1;
                         var galleryLength = $("*[title='" + this.el.galleryTitle + "']").length;
                         $(contentSelector).find(".galleryControls").append("<p class='galleryCounter'>Displaying " + thisIndex + " of " + galleryLength + "</p>");
                     }
                 }
                 // if not a gallery title then just add the close button
-                else
-                {
+                else {
                     $(contentSelector).prepend('<div class="galleryTitle">' + this.el.closeBtn + '</div>');
                 }
             }
@@ -430,8 +385,7 @@
             var popUpImg = new Image(),
                 imgProperties = {};
                 
-            popUpImg.onload = function()
-            {
+            popUpImg.onload = function() {
                 imgProperties.imgHeight = popUpImg.height;
                 imgProperties.imgWidth = popUpImg.width;
                 popup.styleBox(imgProperties, popUpImg);              
@@ -444,10 +398,8 @@
             // add gallery controls and key functions here
             this.addGalleryControls();
         },
-        // ******  display the content if NOT an image  ******
-        styleNodeBox : function()
-        {   
-            console.log(this.fragment);    
+        styleNodeBox : function() {   
+            //console.log(this.fragment);    
             //popup.fragment = $(popup.boxSrc);
             $("#" + this.opts.popupID+" ." + this.opts.contentClass + " img.loader").remove();
             $("#" + this.opts.popupID+" ." + this.opts.contentClass).append('<div class="galleryTitle">' + this.el.closeBtn + '</div>');
@@ -458,74 +410,60 @@
             //  add close button controls
             this.addCloseButton();
         },
-        // ******  get ajax content for the box  ******
-        getAjaxContent : function()
-        {
+        getAjaxContent : function() {
             var popup = this;
+
             $("#" + this.opts.popupID + " ." + this.opts.contentClass).html('<img class="loader" src="' + this.opts.loaderPath + '" width="" height="" alt="" />');             
             $.ajax({
                 url: popup.el.boxSrc,           
                 dataType : popup.opts.ajaxType,
-                success : function(msg)
-                {               
+                success : function(msg) {               
                     popup.fragment = msg;                
                     popup.styleNodeBox();
                 },
-                error : function()
-                {                           
+                error : function() {                           
                     popup.fragment = "ajax request failed";      
                     popup.styleNodeBox();
                 }
             });     
         },
-        // *******  add controls for the image gallery  ******
-        addGalleryControls : function()
-        {
+        addGalleryControls : function() {
             var popup = this;
             
-            $("#" + this.opts.popupID + " .next").bind('click.' + this.namespace, function(){
+            $("#" + this.opts.popupID + " .next").on('click.' + this.namespace, function(){
                 popup.cycleImage(1);
                 return false;
             });
             
-            $("#" + this.opts.popupID + " .prev").bind('click.' + this.namespace, function(){
+            $("#" + this.opts.popupID + " .prev").on('click.' + this.namespace, function(){
                 popup.cycleImage(-1);
                 return false;
             });
             
             // add key controls and keep escape key handler
-            $(document).bind('keydown.' + this.namespace, function(e)
-            {
+            $(document).on('keydown.' + this.namespace, function(e) {
                 if (e.keyCode == 39 && popup.el.isOpen === true) {
-                    //$(document).unbind('.' + popup.namespace);
                     popup.cycleImage(1);
                 } else if (e.keyCode == 37 && popup.el.isOpen === true) {
-                    //$(document).unbind("." + popup.namespace);
                     popup.cycleImage(-1);
                 }
+
                 if (e.keyCode == 27 && popup.el.isOpen === true) {
                     popup.closeBox();
-                    //$("#"+opts.popupID).fadeOut("slow");
-                    //$(".transparency").fadeOut("slow");
                 }
             });
         },
-        // function to add close box controls to the popup
-        addCloseButton : function()
-        {
+        addCloseButton : function() {
             var popup = this;
             
-            $("#" + popup.opts.popupID + " ." + popup.opts.closeBox).bind('click.' + popup.namespace, function(){
-                if (popup.el.isOpen === true)
-                {
+            $("#" + popup.opts.popupID + " ." + popup.opts.closeBox).on('click.' + popup.namespace, function(){
+                if (popup.el.isOpen === true) {
                     popup.closeBox();
                 }
                 return false;
             });
         },
-        // opens the popup box
-        openBox : function()
-        {
+        openBox : function() {
             this.el.galleryTitle = $(this.el).attr("title");
             this.el.imageDesc = $(this.el).attr("longdesc");
                 
@@ -556,9 +494,7 @@
             // set the isOpen flag
             this.el.isOpen = true;
         },
-        // this function closes the box and removes it from the DOM.
-        closeBox : function()
-        {
+        closeBox : function() {
             // may want to do some fancy stuff here, but for now just fading out the box
             $("#" + this.opts.popupID).stop().fadeOut("slow").css("display","none");
             // delete the popup box from the DOM
@@ -571,12 +507,10 @@
                 this.opts.onClose();
             }
             // unbind the key controls
-            $(document).unbind('keydown.' + this.namespace);
+            $(document).off('keydown.' + this.namespace);
             this.el.isOpen = false;
         },
-        // this function finds the next image and then displays it
-        cycleImage : function(imgIndex)
-        {
+        cycleImage : function(imgIndex) {
             //console.log("hitting cycle image");
             var thisIndex = $("*[title='" + this.el.galleryTitle + "']").index(this.el),
                 galleryLength = $("*[title='" + this.el.galleryTitle + "']").length,
@@ -591,18 +525,21 @@
             
             this.el.isOpen = false;
             // unbind the key controls
-            $(document).unbind('keydown.' + this.namespace);
+            $(document).off('keydown.' + this.namespace);
             $("*[title='" + this.el.galleryTitle + "']:eq(" + cycleIndex + ")").popup("openBox");
         },
         option : function(args) {
             this.opts = $.extend(true, {}, this.opts, args);
         },
-        // want to change the content of the box? no worries
+        // want to change the content element the popup points to? no worries
         changeContent : function(content) {         
             this.fragment = $(content);
         },
+        setFragmentHtml : function(content) { // change the content of the current popup
+            this.fragment.html(content);
+        },
         destroy : function() {
-            this.el.unbind("." + this.namespace);
+            this.el.off("." + this.namespace);
         }
     };
     
