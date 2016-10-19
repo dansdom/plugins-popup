@@ -526,6 +526,10 @@
             var thisIndex = $("*[title='" + this.el.galleryTitle + "']").index(this.el),
                 galleryLength = $("*[title='" + this.el.galleryTitle + "']").length,
                 cycleIndex = thisIndex + imgIndex;
+
+            if (!this.opts.galleryCircular && (cycleIndex < 0 || cycleIndex == galleryLength)) {
+                return;
+            }        
                 
             if (cycleIndex < 0) {
                 cycleIndex = galleryLength - 1;
